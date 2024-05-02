@@ -197,9 +197,8 @@ switch (UART_MODULE) {
 
 //*****************************************************************************
 //
-//
-//Authors :abdallah tamer      30/4/2024    11:09 pm
-//                edited            28/4/2024        4:24 am
+//     Authors :abdallah tamer      30/4/2024    5:09 pm
+//           
 //*****************************************************************************                 
 
 void GET_COMMAND (char *input, uint8_t max_command_length) {
