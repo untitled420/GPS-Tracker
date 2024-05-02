@@ -194,3 +194,23 @@ switch (UART_MODULE) {
 // Return 0 in case of wrong calling
   return 0;  
 }
+
+//*****************************************************************************
+//
+//
+//Authors :abdallah tamer      30/4/2024    11:09 pm
+//                edited            28/4/2024        4:24 am
+//*****************************************************************************                 
+
+void GET_COMMAND (char *input, uint8_t max_command_length) {
+  char element = 0 , i ;
+	for(i = 0 ; i < max_command_length ; i++){     // looping till the max number of available chars sent 
+	    element = UART_RX(0);                      // receive element 
+		if(element  == '\n' || element  == '\r' ){   // break if input was enter
+			break;
+		}else{ 
+			input[i] = element ;
+  		UART_TX(0,element);  //  important in Serial Window --> Echo characters typed in Command Window
+		}
+	}
+}
