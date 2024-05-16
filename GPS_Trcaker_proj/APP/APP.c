@@ -45,14 +45,33 @@ void system_init(){
 }
 
 
-uint32_t get_distance(u32 lat, u32 longt){
-	/*will be ready with the gps module
-	 *just for testing i will increment the value of distance gradually
-	 */
-	distance++;
-	delay_ms(1000);	
-	return distance;
+void get_readings(){
+	/*first we get the readings from the GPS*/
+	GPSread();
+	
+	/*a condition to print "Distance=" pemenantly through walking*/
+	if(num_readings !=0 && Intiate_Reading ==0){
+		
+	lcd_cmd(lcd_Clear);
+	Out_LCD = "Distance=";
+	lcd_str_2nd_row(Out_LCD);
+	Intiate_Reading =1;
+		
+	}
+	/*after reading and storing the coordinates, calculate the distance between the current and latest point
+	*then accumlate this distance and show it on the LCD
+	*/
+	total_distance += dist();
+	sprintf(Reading,"%.*f",0,total_distance);
+	lcd_moveCursor(1,10);
+	lcd_str(Reading);
+	
+	/*after then, show a Notification through the LEDs in the TIVA
+	*if we are near,far or almost near the destination
+	*/
+	RGBLED_Status();
 }
+
 
 /*Here we Determine the User Status,whether he have reached his destination OR he is near it, OR he is still far away*/
 void RGBLED_Status(){
