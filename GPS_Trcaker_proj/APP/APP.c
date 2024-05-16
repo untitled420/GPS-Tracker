@@ -2,25 +2,48 @@
  * APP.c
  *
  * Created: 5/1/2024 12:34:04 PM
- *  Author: Marwan
+ *  Author: Marwan Yasser & Shams Khaled& Ali Elsayed
  */ 
 
 
 #include "APP.h"
-volatile uint32_t	distance;
-u8 button2_in=1;
-volatile u32 lat  = 0;
-volatile u32 longt = 0;
-u8 button_flag=1;
+
+char * Out_LCD;						// a pointer to a string to send data for LCD
+char Reading[100]="\0";		//an array to send readings to the LCD
+char Out_UART[100]= "\0";	//an array to send data for the PC for UART0 
+u8 buzzer_status = 1;			// a buzzer status variable to intiate it with an ON or OFF sound
+u8 button2_in=1;					// used for checking the Output of the switch 
+u8 status_flag = 1;				// a variable to terminate from the program when we reach our destination OR the switch is pressed
+volatile f32 total_distance=0;	//the accumlated calculated distance 
+volatile u8 Intiate_Reading =0; //a dummy variable for printing "Distance=" on the screen during the operation
+extern u8 address;							//the number of addresses we have stored data in, inside the EEPROM
+extern u8 num_readings;					// number of (lat,long) readings we have
 
 
 void system_init(){
+	UART_INIT(0);		//initialize UART0 for PC communication
+	UART_INIT(2);		//initialize UART2 for GPS communication
+	Systick_INIT();	//initialize the Systick Timer, for delays requied
+	lcd_init();			//initialize LCD for showing the distance and status 
+	Buzzer_Init();	//initialize the Buzzer PIN
+	EEPROMINIT(); 	//initialize the EEPROM for storing Data 
 	RGBLED_Int();		//to initialize the internal LEDS of PORTF
-	SW2_Int();			//to initialize the internal switch of PORTF
-	Systick_INIT();
-	UART_INIT(2);		// enabling UART2 for GPS
-	//GPS_int;			//for the GPS module "not ready yet"
+	SW2_Int();			//initialize SW2 in the Tiva kit 
+	
+	/*Welcoming message*/
+	Out_LCD = " Welcome to our ";
+	lcd_str(Out_LCD);
+	Out_LCD = "GPS Tracking Sys";
+	lcd_str_2nd_row(Out_LCD);
+	delay_ms(500);
+	lcd_cmd(lcd_Clear);
+	
+	/*Loading status till the GPS Reads coordinates*/
+	Out_LCD = "Loading...";
+	lcd_str(Out_LCD);
+	start_sound(buzzer_status);
 }
+
 
 uint32_t get_distance(u32 lat, u32 longt){
 	/*will be ready with the gps module
@@ -49,4 +72,17 @@ void RGBLED_Status(){
 		RGBLED_ON(RED);
 	}
 	 
+}
+
+
+
+/*Here we send the Data stored from the EEPROM*/
+void EEPROM_send(){
+	int address_eeprom; 
+	int final_address = ((int) EEPROM_Read(0)) - 1; //the final address we need to access
+	testing(Out_UART, (f32) (final_address));
+  for (address_eeprom = 1 ; address_eeprom <= 2 * final_address ; address_eeprom++ ){
+		testing(Out_UART,(f32)(EEPROM_Read(address_eeprom))/1000000.0);
+		}
+	
 }
