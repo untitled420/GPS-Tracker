@@ -54,26 +54,52 @@ uint32_t get_distance(u32 lat, u32 longt){
 	return distance;
 }
 
+/*Here we Determine the User Status,whether he have reached his destination OR he is near it, OR he is still far away*/
 void RGBLED_Status(){
-	distance = get_distance(lat, longt);
-	button2_in = SW2_Input();
-	if ((button2_in == LOGIC_LOW)||(distance>100)){ //if button 2 is pressed OR the distance exceeds 100 meters, turn the LED GREEN
+	
+	/*First, Calculate the distance between the current place and the destination*/
+	f32 distance = Finaldist();
+	char c = '\0';	//variable to recive data from PC
+	
+	/*Get the status of the Push Button*/
+	button2_in= SW2_Input();
+	
+	/*Now, after calculating the distance, show the status according to it*/	
+	if ((button2_in == LOGIC_LOW)||(distance<5)){ //if button 2 is pressed OR the distance less than 5 meters, turn the LED Blue
 		RGBLED_OFF(PF123_mask);
-		RGBLED_ON(GREEN);
-		button_flag=0; //set flag to zero , so the other conditions fails
+		RGBLED_ON(BLUE);
+		status_flag=0; //set flag to zero , so the other conditions fails
 		
+	/*You have reached the Place you want, So you have the option to send U and get your Data*/
+		Out_LCD = "Here we are! :D";
+		lcd_str_1st_row(Out_LCD);
+		dest_sound(buzzer_status);
+		lcd_cmd(lcd_Clear);
+		Out_LCD = "Send U for data.";
+		lcd_str_1st_row(Out_LCD);
+		
+		while (c != 'U' && c != 'u'){ //check if you have recived a U command or not
+			c = UART_RX(0);
+		}
+		EEPROM_send();
+		lcd_cmd(lcd_Clear);
+		Out_LCD = "Thanks :D";
+		lcd_str_1st_row(Out_LCD);
 	}
-	else if((distance <100)&&(distance>95)&&(button_flag)){ //if the distance less than 100 AND more than 95 meters , turn the LED to yellow
+	else if((distance >5)&&(distance<50)&&(status_flag)){ //if the distance less than 50 AND more than 5 meters , turn the LED to yellow
+		Out_LCD = "Almost There!";
+		lcd_str_1st_row(Out_LCD);
 		RGBLED_OFF(PF123_mask);
 		RGBLED_ON(GREEN|RED);
 	}
-	else if ((distance<95)&&(button_flag)){ //if the distance less than 95 AND the button is not pressed , turn the LED to RED
+	else if ((distance>50)&&(status_flag)){ //if the distance more than 50 and the button is not pressed , turn the LED to RED
+		Out_LCD = "Go ON!";
+		lcd_str_1st_row(Out_LCD);
 		RGBLED_OFF(PF123_mask);
 		RGBLED_ON(RED);
 	}
 	 
 }
-
 
 
 /*Here we send the Data stored from the EEPROM*/
