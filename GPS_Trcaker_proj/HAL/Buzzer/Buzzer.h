@@ -13,7 +13,7 @@
 
 
 #define Buzzer_PORT PORTB_ID
-#define Buzzer_PIN 	PIN7
+#define Buzzer_PIN 	PIN1
 
 
 void Buzzer_Init();
