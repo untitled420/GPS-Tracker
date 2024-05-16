@@ -1,3 +1,9 @@
+/*
+ * LCD.c
+ *
+ * Created: 4/30/2024 10:45:39 PM
+ *  Author: Ali Elsayed & Abdelrahman Awad
+ */ 
 #include "LCD.h"
 
 /////////  Enabling The Clock of PORT B   ////////
