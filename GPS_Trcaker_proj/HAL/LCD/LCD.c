@@ -58,6 +58,15 @@ void lcd_char(unsigned char data){
 	delay_us(40);
 }
 
+///////////  Writing a string to the LCD ///////////////
+void lcd_str_1st_row( char *str){
+	int i;
+	lcd_cmd(first_row);
+	for( i = 0; *str!=0; i++){
+		lcd_char(*(str++),RS);
+	}
+}
+
 ///////////  Writing a string to the first row of LCD  ///////////////
 void lcd_str_1st_row( char *str){
 	int i;
