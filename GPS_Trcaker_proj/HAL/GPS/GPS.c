@@ -21,7 +21,7 @@ char Out_UART2[100]= "\0";							  // an array
 void GPSread()
 {
 	char  GPSValues[100], parseValue[12][20], *token;
-/*Here we Check on the sequence we recive if it's the right line of data we need*/
+/*Here we Check on the sequence we receive if it's the right line of data we need*/
 	f32 latitude = 0.0, longitude = 0.0, sec = 0.0, result = 0.0, min = 0.0;
 	uint32_t index = 0, deg;
 	char recived_char;
@@ -97,7 +97,7 @@ void GPSread()
 				EEPROM_Write(address,(currentLat*1000000)); //store the reading as an integer form
 				EEPROM_Write(address+1,(currentLong*1000000));//store the reading as an integer form
 				
-				address +=2; //increament the address by 2, to be right for saving next readings
+				address +=2; //increment the address by 2, to be right for saving next readings
 				num_readings++; //(lat, long);
 				EEPROM_Write(0,num_readings);
 			}
@@ -115,3 +115,57 @@ void GPSread()
 	} while (check != 7); //do until you find the last character right 
 }
 
+
+f32 ToRAD(f32 angle){
+	return angle * PI / 180;
+}
+
+
+f32 dist(void){
+	uint32_t R=6371000;
+	f32 distance, c, a, latDiff, longDiff, currentLatrad, oldLatrad;
+	/*if we are still in the first reading, skip that reading and return zero distance*/
+	if(oldLat ==0 ||oldLong ==0){
+		return 0;
+	}
+	oldLatrad = ToRAD(oldLat);
+	currentLatrad = ToRAD(currentLat);
+	longDiff = ToRAD(currentLong-oldLong);
+	latDiff = ToRAD(currentLat-oldLat);
+
+	a = pow(sin(latDiff/2.0), 2.0)+cos(currentLatrad)*cos(oldLatrad)*pow(sin(longDiff/2.0), 2.0);
+	c = 2 * atan2(sqrt(a), sqrt(1 - a));
+	distance = R*c;
+	/*a condition to approximate the Error Caused by the GPS Readings accuracy*/
+	if((distance>5)||(distance<0.5)){
+	return 0.0;
+	}
+	return distance;
+}
+
+f32 Finaldist(void){
+	uint32_t R=6371000;
+	f32 currentLatrad = ToRAD(currentLat);
+	f32 finalLatrad = ToRAD(FINAL_lat);
+	f32 longDiff = ToRAD(FINAL_lng - currentLong);
+	f32 latDiff = ToRAD(FINAL_lat - currentLat);
+	f32 a = pow(sin(latDiff/2.0), 2.0)+cos(currentLatrad)*cos(finalLatrad)*pow(sin(longDiff/2.0), 2.0);
+	f32 c = 2 * atan2(sqrt(a), sqrt(1 - a));
+	return R*c;
+}
+
+
+void GPS_test (){
+char i;
+i = UART_RX (2);
+UART_TX(0,i);
+
+}
+
+void testing(char *str, float num){
+
+		sprintf(str,"%.*f\n",10,num);
+		UART_OutString(str);
+		strcpy(str, "");
+		//UART0_OutChar('\n');
+}
