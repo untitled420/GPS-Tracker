@@ -49,7 +49,7 @@ void RGBLED_OFF(u8 color);
 
 /*
  * Description :
- * Turn Off a specific LED connected to some pin 
+ * Turn ON a specific LED connected to some pin 
  */
 
 void TurnOn_LED (u8	PORT, u8 PIN );
