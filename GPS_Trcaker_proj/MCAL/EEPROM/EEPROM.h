@@ -27,8 +27,7 @@
  * Description :
  * Function to write data from the EEPROM
  * Function need 2 arguments
-
- * Caller of function must be sure that address passed can be divided by 4 
+ * user pass address from 0 to 512
  * Second arg : data to be stored
  */
 void EEPROM_Write(uint32_t address, float data);
@@ -36,9 +35,8 @@ void EEPROM_Write(uint32_t address, float data);
  /*
  * Description :
  * Function to read data from the EEPROM
+ * user pass address from 0 to 512
  * Function need 1 argument
-
- * *Caller of function must be sure that address passed can be divided by 4 
  */
 float EEPROM_Read(uint32_t address);
 
