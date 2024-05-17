@@ -27,7 +27,7 @@
  * Description :
  * Function to write data from the EEPROM
  * Function need 2 arguments
- ** First arg: address to store in [valid address range 0x0 -> 0x7FC ]
+
  * Caller of function must be sure that address passed can be divided by 4 
  * Second arg : data to be stored
  */
@@ -37,7 +37,7 @@ void EEPROM_Write(uint32_t address, float data);
  * Description :
  * Function to read data from the EEPROM
  * Function need 1 argument
- * Arg: address to read from [valid address range 0x0 -> 0x7FC ]
+
  * *Caller of function must be sure that address passed can be divided by 4 
  */
 float EEPROM_Read(uint32_t address);
