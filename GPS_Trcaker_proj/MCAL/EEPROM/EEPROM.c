@@ -31,8 +31,6 @@ void EEPROM_Write(uint32_t address, float data) {
     EEPROM_EEBLOCK_R = address / 16;         // 16 words per block
     EEPROM_EEOFFSET_R = (address % 16);  // 4 words per offset
     EEPROM_EERDWR_R = data;    // Write the data THIS IS NEW BOODY
-
-//  Deleted probably will give error  *((volatile uint32_t*)(EEPROM_EESIZE_R + address)) = data ;    
     
     while((EEPROM_EEDONE_R & EEPROM_EEDONE_WORKING)!=0); // Wait for the write to complete
     // Check for any errors
