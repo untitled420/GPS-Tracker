@@ -24,7 +24,7 @@ void EEPROMINIT(void){
 }
 
 
-// start address 0x0 , end address 0x7FC 
+
 void EEPROM_Write(uint32_t address, float data) {
     while((EEPROM_EEDONE_R & EEPROM_EEDONE_WORKING)!=0);     // Wait for the EEPROM to be ready
     // Set the address to write to
@@ -42,7 +42,7 @@ void EEPROM_Write(uint32_t address, float data) {
 }
 
 
-// start adress 0x0 , end address 0x7FC 
+
 float EEPROM_Read(uint32_t address) {
     while((EEPROM_EEDONE_R & EEPROM_EEDONE_WORKING)!=0);    // Wait for the EEPROM to be ready
     // Set the address to read from
