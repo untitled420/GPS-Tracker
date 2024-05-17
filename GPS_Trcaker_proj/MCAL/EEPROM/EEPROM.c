@@ -48,7 +48,7 @@ float EEPROM_Read(uint32_t address) {
     // Set the address to read from
     EEPROM_EEBLOCK_R = address / 16;        // 16 words per block
     EEPROM_EEOFFSET_R = (address % 16); // 4 words per offset REMOVE DIVIDE BY 4
-    data_read = EEPROM_EERDWR_R;   // Read the data// check this line EEPROM_EESIZE_R should be the base address of eeprom which is 0x400AF000
+    data_read = EEPROM_EERDWR_R;   // Read the data
     // Check for any errors
     if(EEPROM_EESUPP_R & (EEPROM_EESUPP_PRETRY | EEPROM_EESUPP_ERETRY)) {
         // Handle error
